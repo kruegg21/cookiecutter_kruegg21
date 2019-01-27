@@ -26,9 +26,9 @@ import logging.config
 import os
 import smtplib
 
-import word_neo4j.settings_accessor  # pylint: disable=import-error
+import {{cookiecutter.project_slug}}.settings_accessor # pylint: disable=import-error
 
-SETTINGS = word_neo4j.settings_accessor.SettingsAccessor()
+SETTINGS = {{cookiecutter.project_slug}}.settings_accessor.SettingsAccessor()
 if SETTINGS.logging_config:
     logging.config.dictConfig(SETTINGS.logging_config)
 _LOGGER = logging.getLogger(__name__)

@@ -34,13 +34,13 @@ Todo:
 """
 import logging
 
-import _send_notification  # pylint: disable=import-error
-import _settings_accessor  # pylint: disable=import-error
+import {{cookiecutter.project_slug}}.send_notification  # pylint: disable=import-error
+import {{cookiecutter.project_slug}}.settings_accessor  # pylint: disable=import-error
 
 
-_SETTINGS = _settings_accessor.SettingsAccessor()
+_SETTINGS = {{cookiecutter.project_slug}}.settings_accessor.SettingsAccessor()
 _LOGGER = logging.getLogger(__name__)
-_HANDLER = _send_notification.EmailHandler()
+_HANDLER = {{cookiecutter.project_slug}}.send_notification.EmailHandler()
 _LOGGER.addHandler(_HANDLER)
 _LOGGER.setLevel(logging.WARNING)
 
