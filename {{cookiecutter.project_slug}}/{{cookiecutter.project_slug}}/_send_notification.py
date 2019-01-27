@@ -23,13 +23,14 @@ Todo:
 """
 import email
 import logging.config
+import os
 import smtplib
 
 import _settings_accessor  # pylint: disable=import-error
 
-
 _SETTINGS = _settings_accessor.SettingsAccessor()
-logging.config.dictConfig(_SETTINGS.logging_config)
+if _SETTINGS.logging_config:
+    logging.config.dictConfig(_SETTINGS.logging_config)
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(logging.DEBUG)
 
@@ -44,24 +45,44 @@ class EmailHandler(logging.StreamHandler):
     """
 
     def emit(self, record):
-        try:
+        has_all_email_settings = True
+        if not _SETTINGS.email_address:
+            has_all_email_settings = False
+            package_name = os.path.basename(os.path.dirname(__file__))
+            _LOGGER.info("Missing email address so you won't receive any "
+                         "alerts from {}".format(package_name))
+
+        if not _SETTINGS.admin_addresses:
+            has_all_email_settings = False
+            package_name = os.path.basename(os.path.dirname(__file__))
+            _LOGGER.info("Missing admin addresses so you won't receive any "
+                         "alerts from {}".format(package_name))
+
+        if not _SETTINGS.admin_addresses:
+            has_all_email_settings = False
+            package_name = os.path.basename(os.path.dirname(__file__))
+            _LOGGER.info("Missing admin addresses so you won't receive any "
+                         "alerts from {}".format(package_name))
+
+        if has_all_email_settings:
             message = self.format(record)
             msg = email.message.EmailMessage()
             msg['From'] = _SETTINGS.email_address
             msg['To'] = ', '.join(_SETTINGS.admin_addresses)
             msg['Subject'] = 'Hello'
             msg.set_content(message)
-            smtp = smtplib.SMTP(_SETTINGS.email_host)
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.login(_SETTINGS.email_address, _SETTINGS.email_password)
-            smtp.send_message(msg)
-            smtp.quit()
-            _LOGGER.info('email message sent')
-        except smtplib.SMTPServerDisconnected as error_message:
-            _LOGGER.debug(error_message)
-        except smtplib.SMTPAuthenticationError as error_message:
-            _LOGGER.debug(error_message)
-        except OSError as error_message:
-            _LOGGER.debug(error_message)
-            _LOGGER.debug('Poorly formed port number in email credentials')
+            try:
+                smtp = smtplib.SMTP(_SETTINGS.email_host)
+                smtp.ehlo()
+                smtp.starttls()
+                smtp.login(_SETTINGS.email_address, _SETTINGS.email_password)
+                smtp.send_message(msg)
+                smtp.quit()
+                _LOGGER.info('email message sent')
+            except smtplib.SMTPServerDisconnected as error_message:
+                _LOGGER.debug(error_message)
+            except smtplib.SMTPAuthenticationError as error_message:
+                _LOGGER.debug(error_message)
+            except OSError as error_message:
+                _LOGGER.debug(error_message)
+                _LOGGER.debug('Poorly formed port number in email credentials')
