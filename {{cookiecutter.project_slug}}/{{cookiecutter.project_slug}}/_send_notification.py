@@ -26,11 +26,11 @@ import logging.config
 import os
 import smtplib
 
-import _settings_accessor  # pylint: disable=import-error
+import word_neo4j.settings_accessor  # pylint: disable=import-error
 
-_SETTINGS = _settings_accessor.SettingsAccessor()
-if _SETTINGS.logging_config:
-    logging.config.dictConfig(_SETTINGS.logging_config)
+SETTINGS = word_neo4j.settings_accessor.SettingsAccessor()
+if SETTINGS.logging_config:
+    logging.config.dictConfig(SETTINGS.logging_config)
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(logging.DEBUG)
 
@@ -46,36 +46,36 @@ class EmailHandler(logging.StreamHandler):
 
     def emit(self, record):
         has_all_email_settings = True
-        if not _SETTINGS.email_address:
+        if not SETTINGS.email_address:
             has_all_email_settings = False
             package_name = os.path.basename(os.path.dirname(__file__))
             _LOGGER.info("Missing email address so you won't receive any "
-                         "alerts from package {}".format(package_name))
+                         "alerts from package %s", package_name)
 
-        if not _SETTINGS.admin_addresses:
+        if not SETTINGS.admin_addresses:
             has_all_email_settings = False
             package_name = os.path.basename(os.path.dirname(__file__))
             _LOGGER.info("Missing admin addresses so you won't receive any "
-                         "alerts from package {}".format(package_name))
+                         "alerts from package %s", package_name)
 
-        if not _SETTINGS.email_host:
+        if not SETTINGS.email_host:
             has_all_email_settings = False
             package_name = os.path.basename(os.path.dirname(__file__))
             _LOGGER.info("Missing email server host so you won't receive any "
-                         "alerts from package {}".format(package_name))
+                         "alerts from package %s", package_name)
 
         if has_all_email_settings:
             message = self.format(record)
             msg = email.message.EmailMessage()
-            msg['From'] = _SETTINGS.email_address
-            msg['To'] = ', '.join(_SETTINGS.admin_addresses)
+            msg['From'] = SETTINGS.email_address
+            msg['To'] = ', '.join(SETTINGS.admin_addresses)
             msg['Subject'] = 'Hello'
             msg.set_content(message)
             try:
-                smtp = smtplib.SMTP(_SETTINGS.email_host)
+                smtp = smtplib.SMTP(SETTINGS.email_host)
                 smtp.ehlo()
                 smtp.starttls()
-                smtp.login(_SETTINGS.email_address, _SETTINGS.email_password)
+                smtp.login(SETTINGS.email_address, SETTINGS.email_password)
                 smtp.send_message(msg)
                 smtp.quit()
                 _LOGGER.info('email message sent')

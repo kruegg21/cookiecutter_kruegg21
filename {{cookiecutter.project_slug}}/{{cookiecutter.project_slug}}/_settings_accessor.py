@@ -120,9 +120,10 @@ class SettingsAccessor:
     def admin_addresses(self):
         """list: list of email password of Admins."""
         if _EMAIL_CONFIG:
-            return _EMAIL_CONFIG.get('admin_addresses', None)
+            out = _EMAIL_CONFIG.get('admin_addresses', None)
         else:
-            return None
+            out = None
+        return out
 
     @property
     def email_host(self):
