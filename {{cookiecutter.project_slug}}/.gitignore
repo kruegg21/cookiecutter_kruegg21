@@ -114,4 +114,6 @@ ENV/
 # settings
 */settings/*
 !*/settings/.gitkeep
+!*/settings/logging.json
+
 

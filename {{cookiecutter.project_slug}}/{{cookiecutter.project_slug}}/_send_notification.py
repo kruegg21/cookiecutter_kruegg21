@@ -50,19 +50,19 @@ class EmailHandler(logging.StreamHandler):
             has_all_email_settings = False
             package_name = os.path.basename(os.path.dirname(__file__))
             _LOGGER.info("Missing email address so you won't receive any "
-                         "alerts from {}".format(package_name))
+                         "alerts from package {}".format(package_name))
 
         if not _SETTINGS.admin_addresses:
             has_all_email_settings = False
             package_name = os.path.basename(os.path.dirname(__file__))
             _LOGGER.info("Missing admin addresses so you won't receive any "
-                         "alerts from {}".format(package_name))
+                         "alerts from package {}".format(package_name))
 
-        if not _SETTINGS.admin_addresses:
+        if not _SETTINGS.email_host:
             has_all_email_settings = False
             package_name = os.path.basename(os.path.dirname(__file__))
-            _LOGGER.info("Missing admin addresses so you won't receive any "
-                         "alerts from {}".format(package_name))
+            _LOGGER.info("Missing email server host so you won't receive any "
+                         "alerts from package {}".format(package_name))
 
         if has_all_email_settings:
             message = self.format(record)
