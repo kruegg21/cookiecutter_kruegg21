@@ -104,12 +104,12 @@ class SettingsAccessor:
     @property
     def email_address(self):
         """str: string of email address of Admin."""
-        return _EMAIL_CONFIG.get('address', None)
+        return _EMAIL_CONFIG.get('address', None) if _EMAIL_CONFIG else None
 
     @property
     def email_password(self):
         """str: string of email password of Admin."""
-        return _EMAIL_CONFIG.get('password', None)
+        return _EMAIL_CONFIG.get('password', None) if _EMAIL_CONFIG else None
 
     @property
     def credentials(self):
@@ -119,12 +119,15 @@ class SettingsAccessor:
     @property
     def admin_addresses(self):
         """list: list of email password of Admins."""
-        return _EMAIL_CONFIG.get('admin_addresses', None)
+        if _EMAIL_CONFIG:
+            return _EMAIL_CONFIG.get('admin_addresses', None)
+        else:
+            return None
 
     @property
     def email_host(self):
         """list: list of email password of Admins."""
-        return _EMAIL_CONFIG.get('host', None)
+        return _EMAIL_CONFIG.get('host', None) if _EMAIL_CONFIG else None
 
     @property
     def logging_config(self):
