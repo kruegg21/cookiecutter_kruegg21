@@ -26,7 +26,7 @@ import logging.config
 import os
 import smtplib
 
-import {{cookiecutter.project_slug}}.settings_accessor # pylint: disable=import-error
+import {{cookiecutter.project_slug}}.settings_accessor  # pylint: disable=import-error
 
 SETTINGS = {{cookiecutter.project_slug}}.settings_accessor.SettingsAccessor()
 if SETTINGS.logging_config:
